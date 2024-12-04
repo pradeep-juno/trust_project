@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "739824187551",
+    "project_id": "jk-project-635f0",
+    "storage_bucket": "jk-project-635f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739824187551:android:852c6be96f9a140c140aaa",
+        "android_client_info": {
+          "package_name": "com.example.jk_event"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVJEd36PCXklIT9-WnXddiFuoWc0GwYfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
