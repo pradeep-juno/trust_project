@@ -2,8 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jk_event/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../router/routers.dart';
 
 class LoginController extends GetxController {
+  var mobileNumber = ''.obs;
+  var password = ''.obs;
+  var adminName = ''.obs;
+  var adminId = ''.obs;
+
+  late Stream<DocumentSnapshot> adminDataStream;
+
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   final mobileController = TextEditingController();
@@ -120,9 +130,16 @@ class LoginController extends GetxController {
             behavior: SnackBarBehavior.floating,
           ),
         );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('mobile', mobileNumber);
+        await prefs.setString('password', password);
+        await prefs.setString('id', AppConstant.adminId);
+
+        getAdminDataFromPreferences();
 
         clearController(context);
-        // Get.offNamed(AppRouter.LOGIN_SCREEN);
+
+        Get.offNamed(AppRouter.HOME_SCREEN, arguments: '');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -141,4 +158,40 @@ class LoginController extends GetxController {
     mobileController.clear();
     passwordController.clear();
   }
+
+  void listenAdminDataUpdates(BuildContext context, String id) {
+    try {
+      adminDataStream = firebaseFirestore
+          .collection(AppConstant.collectionAdmin)
+          .doc(id)
+          .snapshots();
+      adminDataStream.listen((documentSnapshots) {
+        if (documentSnapshots.exists) {
+          mobileNumber.value = documentSnapshots['mobile no'] ?? 'Not Found';
+          password.value = documentSnapshots['password'] ?? 'Not Found';
+          adminName.value = documentSnapshots['name'] ?? 'Not Found';
+          adminId.value = documentSnapshots['id'] ?? 'Not Found';
+
+          print('Admin Mobile Number: ${mobileNumber.value}');
+          print('Admin Password: ${password.value}');
+          print('Admin Name: ${adminName.value}');
+          print('Admin ID: ${adminId.value}');
+        } else {
+          print("ID not fournd");
+        }
+      });
+    } catch (e) {
+      print("timeout ");
+    }
+  }
+}
+
+Future<void> getAdminDataFromPreferences() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? mobileNumber = prefs.getString('mobile');
+  String? password = prefs.getString('password');
+
+  // Print retrieved data with newlines
+  print(
+      "Retrieved Admin Data:\nMobile Number: $mobileNumber\nPassword: $password");
 }

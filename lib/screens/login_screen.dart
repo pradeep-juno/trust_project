@@ -6,10 +6,10 @@ import 'package:jk_event/utils/functions.dart';
 
 import '../controller/login_controller.dart';
 
-class DesktopLoginScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
   final LoginController loginController = Get.put(LoginController());
 
-  DesktopLoginScreen({super.key});
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
