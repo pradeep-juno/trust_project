@@ -44,6 +44,17 @@ class LoginController extends GetxController {
       );
       return false;
     }
+    if (mobileNumber.length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Mobile Number must be 10 digits'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.blue,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return false;
+    }
 
     if (password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,7 +67,30 @@ class LoginController extends GetxController {
       );
       return false;
     }
-
+    if (password.length < 4) {
+      // Password too short
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password length must be at least 4'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.blue,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return false;
+    }
+    if (password.length >= 4 && password.length < 8) {
+      // Password length is between 4 and 7 characters
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password length must be exactly 8'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.blue,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return false;
+    }
     return true;
   }
 
@@ -74,8 +108,8 @@ class LoginController extends GetxController {
       String storedMobileNumber = adminSnapshot['mobile no'];
       String storedPassword = adminSnapshot['password'];
 
-      print("Admin MobileNumber : \$storedMobileNumber");
-      print("Admin Password : \$storedPassword");
+      print("Admin MobileNumber : $storedMobileNumber");
+      print("Admin Password : $storedPassword");
 
       if (mobileNumber == storedMobileNumber && password == storedPassword) {
         ScaffoldMessenger.of(context).showSnackBar(

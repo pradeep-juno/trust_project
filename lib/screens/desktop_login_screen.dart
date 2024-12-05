@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jk_event/utils/constants.dart';
 import 'package:jk_event/utils/functions.dart';
@@ -7,6 +8,7 @@ import '../controller/login_controller.dart';
 
 class DesktopLoginScreen extends StatelessWidget {
   final LoginController loginController = Get.put(LoginController());
+
   DesktopLoginScreen({super.key});
 
   @override
@@ -39,7 +41,13 @@ class DesktopLoginScreen extends StatelessWidget {
                     hint: AppConstant.mobileNo,
                     controller: loginController.mobileController,
                     color: Colors.grey,
-                    icon: Icons.person),
+                    icon: Icons.person,
+                    isPassword: false,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10)
+                    ]),
                 buildSizedBoxHeightFun(context, height: 10),
                 buildTextFun(context,
                     title: AppConstant.password,
@@ -51,7 +59,10 @@ class DesktopLoginScreen extends StatelessWidget {
                     hint: AppConstant.enterPassword,
                     controller: loginController.passwordController,
                     color: Colors.grey,
-                    icon: Icons.lock),
+                    icon: Icons.lock,
+                    isPassword: true,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [LengthLimitingTextInputFormatter(8)]),
                 buildSizedBoxHeightFun(context, height: 15),
                 buildContainerButtonFun(context, AppConstant.login,
                     color: Colors.pinkAccent,
@@ -77,22 +88,3 @@ class DesktopLoginScreen extends StatelessWidget {
 
                           onPressed: () => loginController.submit(context),
  */
-
-buildContainerButtonFun(BuildContext context, String login,
-    {required Color color, required Function() onPressed}) {
-  return InkWell(
-      onTap: onPressed,
-      child: Container(
-          height: 44,
-          width: 294,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: color),
-          child: Center(
-            child: buildTextFun(context,
-                title: AppConstant.login,
-                fontsize: 12,
-                fontweight: FontWeight.w800,
-                color: Colors.white),
-          )));
-}
