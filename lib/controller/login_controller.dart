@@ -130,6 +130,7 @@ class LoginController extends GetxController {
             behavior: SnackBarBehavior.floating,
           ),
         );
+        //locally stored
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('mobile', mobileNumber);
         await prefs.setString('password', password);
@@ -139,7 +140,7 @@ class LoginController extends GetxController {
 
         clearController(context);
 
-        Get.offNamed(AppRouter.HOME_SCREEN, arguments: '');
+        Get.offNamed(AppRouter.HOME_SCREEN);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -165,6 +166,7 @@ class LoginController extends GetxController {
           .collection(AppConstant.collectionAdmin)
           .doc(id)
           .snapshots();
+
       adminDataStream.listen((documentSnapshots) {
         if (documentSnapshots.exists) {
           mobileNumber.value = documentSnapshots['mobile no'] ?? 'Not Found';
@@ -182,6 +184,15 @@ class LoginController extends GetxController {
       });
     } catch (e) {
       print("timeout ");
+    }
+  }
+
+  goToHomeScreen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? id = prefs.getString('id');
+
+    if (id!.isNotEmpty) {
+      Get.offNamed(AppRouter.HOME_SCREEN);
     }
   }
 }

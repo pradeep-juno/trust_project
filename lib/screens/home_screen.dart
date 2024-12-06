@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jk_event/controller/login_controller.dart';
+import 'package:jk_event/utils/constants.dart';
+import 'package:jk_event/utils/functions.dart';
+import 'package:jk_event/utils/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../router/routers.dart';
@@ -15,10 +18,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final LoginController loginController = Get.put(LoginController());
 
-  String mobile = '';
-  String password = '';
-  String id = '';
-
   @override
   void initState() {
     super.initState();
@@ -27,9 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String id = '';
+
     setState(() {
-      mobile = prefs.getString('mobile') ?? 'Not Available';
-      password = prefs.getString('password') ?? 'Not Available';
       id = prefs.getString('id') ?? 'Not Available';
     });
 
@@ -43,8 +43,49 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Center(child: Text("Hello")),
+          title: Obx(() {
+            // Extract first two letters of the name
+            String initials = loginController.adminName.value.isNotEmpty
+                ? loginController.adminName.value.substring(0, 2).toUpperCase()
+                : "--";
+
+            return Row(
+              children: [
+                buildCircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.blue,
+                    text: initials,
+                    color: Colors.white,
+                    fontweight: FontWeight.bold),
+
+                const SizedBox(width: 10), // Space between avatar and text
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildTextFun(context,
+                        title:
+                            "${AppConstant.hi}, ${loginController.adminName.value}!",
+                        fontsize: 18,
+                        fontweight: FontWeight.bold,
+                        color: Colors.black),
+                    buildTextFun(context,
+                        title: "${loginController.mobileNumber.value}",
+                        fontsize: 14,
+                        fontweight: FontWeight.normal,
+                        color: Colors.black),
+                  ],
+                ),
+                buildSizedBoxWidthFun(context, width: 350),
+                buildTextFun(context,
+                    title: AppConstant.ajayTrust,
+                    fontsize: 30,
+                    fontweight: FontWeight.bold,
+                    color: Colors.red)
+              ],
+            );
+          }),
           actions: [
             IconButton(
               icon: const Icon(Icons.logout),
@@ -62,14 +103,21 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Welcome to the Home Screen!"),
+              Obx(() {
+                return buildTextFun(context,
+                    title:
+                        "${AppConstant.hi}, ${loginController.adminName.value}!",
+                    fontsize: 18,
+                    fontweight: FontWeight.bold,
+                    color: Colors.black);
+              }),
               const SizedBox(height: 20),
               Obx(() {
-                return Text("Mobile: ${loginController.mobileNumber.value}");
-              }),
-              const SizedBox(height: 10),
-              Obx(() {
-                return Text("Password: ${loginController.password.value}");
+                return buildTextFun(context,
+                    title: "${loginController.mobileNumber.value}",
+                    fontsize: 18,
+                    fontweight: FontWeight.bold,
+                    color: Colors.black);
               }),
             ],
           ),

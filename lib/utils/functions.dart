@@ -20,6 +20,12 @@ buildSizedBoxHeightFun(BuildContext context, {required double height}) {
   );
 }
 
+buildSizedBoxWidthFun(BuildContext context, {required double width}) {
+  return SizedBox(
+    width: width,
+  );
+}
+
 buildTextFormFieldFun(
   BuildContext context, {
   required String hint,
@@ -86,7 +92,7 @@ buildContainerButtonFun(BuildContext context, String login,
       onTap: onPressed,
       child: Container(
           height: 44,
-          width: 360,
+          width: 298,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: color),
