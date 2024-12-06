@@ -5,7 +5,6 @@ import 'package:jk_event/utils/constants.dart';
 import 'package:jk_event/utils/functions.dart';
 
 import '../controller/login_controller.dart';
-import '../utils/widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
