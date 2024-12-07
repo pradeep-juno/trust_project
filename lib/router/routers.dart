@@ -9,9 +9,9 @@ class AppRouter {
 
   static var routes = [
     GetPage(
-      name: LOGIN_SCREEN,
-      page: () => LoginScreen(),
-    ),
+        name: LOGIN_SCREEN,
+        page: () => LoginScreen(),
+        transition: Transition.leftToRightWithFade),
     GetPage(name: HOME_SCREEN, page: () => HomeScreen()),
   ];
 }

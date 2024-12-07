@@ -6,10 +6,25 @@ import 'package:jk_event/utils/functions.dart';
 
 import '../controller/login_controller.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final LoginController loginController = Get.put(LoginController());
 
-  LoginScreen({super.key});
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    setState(() {
+      loginController.goToHomeScreen();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +35,11 @@ class LoginScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: CircleAvatar(
-              radius: 50,
-              child: Image.asset(AppConstant.logoImage, fit: BoxFit.cover),
-            ),
+            child: buildCircleAvatar(radius: 50, imagePath: AppConstant.jkImage
+                // Replace with your image path
+                ),
           ),
-          buildSizedBoxHeightFun(context, height: 80.0),
+          buildSizedBoxHeightFun(context, height: 60.0),
           Padding(
             padding: const EdgeInsets.only(left: 30),
             child: Column(
@@ -37,17 +51,20 @@ class LoginScreen extends StatelessWidget {
                     fontweight: FontWeight.bold,
                     color: Colors.black),
                 buildSizedBoxHeightFun(context, height: 5),
-                buildTextFormFieldFun(context,
-                    hint: AppConstant.mobileNo,
-                    controller: loginController.mobileController,
-                    color: Colors.grey,
-                    icon: Icons.person,
-                    isPassword: false,
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(10)
-                    ]),
+                buildTextFormFieldFun(
+                  context,
+                  hint: AppConstant.mobileNo,
+                  controller: loginController.mobileController,
+                  color: Colors.pinkAccent,
+                  icon: Icons.person,
+                  isPassword: false,
+                  keyboardType: TextInputType.text,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
+                  maxLines: 1,
+                ),
                 buildSizedBoxHeightFun(context, height: 10),
                 buildTextFun(context,
                     title: AppConstant.password,
@@ -58,7 +75,7 @@ class LoginScreen extends StatelessWidget {
                 buildTextFormFieldFun(context,
                     hint: AppConstant.enterPassword,
                     controller: loginController.passwordController,
-                    color: Colors.grey,
+                    color: Colors.pinkAccent,
                     icon: Icons.lock,
                     isPassword: true,
                     keyboardType: TextInputType.text,
@@ -75,16 +92,3 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
-/*
-   buildContainerButton(context,
-                          title: ProjectConstants.login,
-                          titleColor: ProjectColors.whiteColor,
-                          backgroundColor: ProjectColors.accentPink,
-                          borderCircular: 8.0,
-                          onPressed: () => loginController.submit(context),
-                          buttonHeight: 50.0,
-                          width: MediaQuery.of(context).size.width),
-
-                          onPressed: () => loginController.submit(context),
- */
