@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:jk_event/controller/home_controller.dart';
 import 'package:jk_event/controller/login_controller.dart';
 import 'package:jk_event/utils/constants.dart';
 import 'package:jk_event/utils/functions.dart';
@@ -16,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final LoginController loginController = Get.put(LoginController());
+
+  final HomeController homeController = Get.put(HomeController());
   bool _isCustomerDetailsVisible = false; // Track visibility of the container
 
   @override
@@ -122,64 +126,86 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildTextFun(context,
-                          title: "Customer Details",
-                          fontsize: 22,
-                          fontweight: FontWeight.bold,
-                          color: Colors.black),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Name',
-                          border: OutlineInputBorder(),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildTextFun(
+                            context,
+                            title: AppConstant.customerDetails,
+                            fontsize: 22,
+                            fontweight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.red),
+                            onPressed: () {
+                              homeController.clearController(context);
+                              setState(() {
+                                _isCustomerDetailsVisible = false;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Mobile Number',
-                          border: OutlineInputBorder(),
-                        ),
+                      buildSizedBoxHeightFun(context, height: 10),
+                      buildTextFormFieldFun(context,
+                          isPassword: false,
+                          hint: AppConstant.name,
+                          border: true,
+                          controller: homeController.customerNameController),
+                      buildSizedBoxHeightFun(context, height: 10),
+                      buildTextFormFieldFun(context,
+                          isPassword: false,
+                          hint: AppConstant.mobile,
+                          border: true,
+                          keyboardType: TextInputType.text,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                          controller:
+                              homeController.customerMobileNumberController),
+                      buildSizedBoxHeightFun(context, height: 10),
+                      buildTextFormFieldFun(context,
+                          isPassword: false,
+                          hint: AppConstant.purposeOfDonation,
+                          controller: homeController
+                              .customerPurposeOfDonationController,
+                          border: true),
+                      buildSizedBoxHeightFun(context, height: 10),
+                      buildTextFormFieldFun(
+                        context,
+                        isPassword: false,
+                        icon: Icons.currency_rupee,
+                        hint: AppConstant.donate,
+                        controller: homeController.customerDonateController,
+                        border: true,
+                        keyboardType: TextInputType.text,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Purpose of donation',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Donate',
-                          prefixIcon: Icon(Icons.currency_rupee),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        maxLines: 2,
-                        decoration: InputDecoration(
-                          hintText: 'Address',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
+                      buildSizedBoxHeightFun(context, height: 10),
+                      buildTextFormFieldFun(context,
+                          isPassword: false,
+                          maxLines: 2,
+                          hint: AppConstant.address,
+                          controller: homeController.customerAddressController,
+                          border: true,
+                          height: 80),
+                      buildSizedBoxHeightFun(context, height: 10),
                       Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Your submit logic here
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.blue, // Sets the button color to blue
-                          ),
-                          child: const Text(
-                            'Submit',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      )
+                          child: buildContainerButtonFun(
+                              context, AppConstant.submit, color: Colors.blue,
+                              onPressed: () async {
+                        final onSaveComplete = () {
+                          _isCustomerDetailsVisible = true;
+                        };
+
+                        await homeController.saveCustomerDetails(
+                            context, onSaveComplete);
+                      }))
                     ],
                   ),
                 ),
