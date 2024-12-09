@@ -14,6 +14,7 @@ class AppConstant {
   static const name = "Name";
   static const customerDetails = 'Customer Details';
   static const submit = "Submit";
+  static const update = "update";
 
   static const adminId = "9jlYqQ5U54zuyBvrUYZV";
 

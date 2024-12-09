@@ -21,6 +21,22 @@ class HomeController extends GetxController {
     _applyTextFormatting();
   }
 
+  Future<void> fetchCustomers() async {
+    try {
+      final snapshot = await firebaseFirestore
+          .collection(AppConstant.collectionCustomer)
+          .get();
+
+      customerList.value = snapshot.docs
+          .map((doc) => Customer.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      print("Customer data fetched successfully : ${customerList}");
+    } catch (e) {
+      print("Something went wrong");
+    }
+  }
+
   // Method to ensure first letter is capitalized
   void _applyTextFormatting() {
     customerNameController.addListener(() {
@@ -56,29 +72,57 @@ class HomeController extends GetxController {
     });
   }
 
-  Future<void> saveCustomerDetails(
-      BuildContext context, Function() onSaveComplete) async {
+  Future<void> addUpdateCustomerDetails(BuildContext context,
+      Function() onSaveComplete, Customer? updateCustomerData) async {
     if (await validateFields(context)) {
-      var docRef =
-          firebaseFirestore.collection(AppConstant.collectionCustomer).doc();
+      if (updateCustomerData != null) {
+        var docRef = firebaseFirestore
+            .collection(AppConstant.collectionCustomer)
+            .doc(updateCustomerData.customerId);
 
-      var customerId = docRef.id;
+        print("Customer Name : ${customerNameController.text}");
 
-      print("Customer Name : ${customerNameController.text}");
+        var customerData = Customer(
+            customerId: updateCustomerData.customerId,
+            customerName: customerNameController.text.trim().toString(),
+            customerMobileNumber:
+                customerMobileNumberController.text.trim().toString(),
+            customerPurposeOfDonation:
+                customerPurposeOfDonationController.text.trim().toString(),
+            customerDonate: customerDonateController.text.trim().toString(),
+            customerAddress: customerAddressController.text.trim().toString());
 
-      var customerData = Customer(
-          customerId: customerId,
-          customerName: customerNameController.text.trim().toString(),
-          customerMobileNumber:
-              customerMobileNumberController.text.trim().toString(),
-          customerPurposeOfDonation:
-              customerPurposeOfDonationController.text.trim().toString(),
-          customerDonate: customerDonateController.text.trim().toString(),
-          customerAddress: customerAddressController.text.trim().toString());
+        print("CustomerData : ${customerData.toString()}");
 
-      print("CustomerData : ${customerData.toString()}");
+        await docRef.update(customerData.toMap());
 
-      await docRef.set(customerData.toMap());
+        clearController(context);
+        fetchCustomers();
+      } else {
+        var docRef =
+            firebaseFirestore.collection(AppConstant.collectionCustomer).doc();
+
+        var customerId = docRef.id;
+
+        print("Customer Name : ${customerNameController.text}");
+
+        var customerData = Customer(
+            customerId: customerId,
+            customerName: customerNameController.text.trim().toString(),
+            customerMobileNumber:
+                customerMobileNumberController.text.trim().toString(),
+            customerPurposeOfDonation:
+                customerPurposeOfDonationController.text.trim().toString(),
+            customerDonate: customerDonateController.text.trim().toString(),
+            customerAddress: customerAddressController.text.trim().toString());
+
+        print("CustomerData : ${customerData.toString()}");
+
+        await docRef.set(customerData.toMap());
+
+        clearController(context);
+        fetchCustomers();
+      }
 
       onSaveComplete();
       Get.back();
@@ -171,5 +215,14 @@ class HomeController extends GetxController {
     customerPurposeOfDonationController.clear();
     customerDonateController.clear();
     customerAddressController.clear();
+  }
+
+  void deleteCustomerData(BuildContext context, String customerId) {
+    firebaseFirestore
+        .collection(AppConstant.collectionCustomer)
+        .doc(customerId)
+        .delete();
+
+    fetchCustomers();
   }
 }
